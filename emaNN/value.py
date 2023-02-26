@@ -17,8 +17,7 @@ class Value:
 
   def __add__(self, other):
     other = wrap(other)
-    out = Value(self.data + other.data, (self, other), '+')
-    return out
+    return Value(self.data + other.data, (self, other), '+')
 
   def __neg__(self, other):
     return self * (-1)
@@ -42,18 +41,19 @@ class Value:
 
   def tanh(self):
     x = self.data
-    t = (math.exp(2*x) - 1)/(math.exp(2*x) + 1)
-    out = Value(t, (self, ), 'tanh')    
-    return out
+    # t = (math.exp(2*x) - 1)/(math.exp(2*x) + 1)
+    t = math.tanh(x)
+    return Value(t, (self, ), 'tanh')    
 
   def exp(self):
     x = self.data
-    out = Value(math.exp(x), (self,), 'exp')
-    return out
+    return Value(math.exp(x), (self,), 'exp')
 
   def __pow__(self, other):
-    out = Value(self.data ** other, (self,wrap(other)), 'pow', f'**{other}')
-    return out
+    return Value(self.data ** other, (self,wrap(other)), 'pow', f'**{other}')
+
+  def relu(self):
+    return Value(0 if self.data < 0 else self.data, (self,), 'ReLU')
 
   def _backward(self):
     if not self._prev:
@@ -71,6 +71,8 @@ class Value:
     elif self._op == 'pow':
       self._prev[0].grad += self._prev[1].data * (self._prev[0].data**(self._prev[1].data - 1)) * self.grad
       self._prev[1].grad += self.data * self.grad
+    elif self._op == 'ReLU':
+      self._prev[0].grad += (self.data > 0) * self.grad
     else:
       raise Exception("")
 

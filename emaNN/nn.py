@@ -21,7 +21,9 @@ class Neuron:
   def __call__(self, x):
     # tanh( w * x + b )
     act = sum(wi*xi for wi, xi in zip(self.w, x)) + self.b
-    out = act.tanh()
+    # out = act.relu()
+    # out = act.tanh()
+    out = act
     return out
 
   def parameters(self):

@@ -9,7 +9,6 @@ class Optimizer:
 
     def zero_grad(self):
         self.model.zero_grad()
-    
 
 class SGD(Optimizer):
    
